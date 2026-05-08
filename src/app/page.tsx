@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const categories = [
@@ -88,16 +90,19 @@ className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 t
   dark
 )}`}
     >
-<a
+<Link
   href="/"
-  className="flex h-20 w-[150px] items-center justify-start overflow-hidden"
+  className="relative flex h-20 w-[150px] items-center justify-start overflow-hidden"
 >
-  <img
+  <Image
     src={dark ? "/logo-light.png" : "/logo-dark.png"}
     alt="Нетизен"
-    className="max-h-9 w-auto object-contain transition-opacity duration-700"
+    width={150}
+    height={48}
+    priority
+    className="h-auto max-h-9 w-auto object-contain transition-opacity duration-700"
   />
-</a>
+</Link>
 
 <nav className="hidden items-center gap-3 text-sm font-medium lg:flex">
   {["Каталог", "Новинки", "Бренды", "Акции", "Поддержка"].map((item) => (
