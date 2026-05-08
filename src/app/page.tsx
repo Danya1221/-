@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { footerData } from "@/data/footer";
+import { AnimatePresence, motion } from "framer-motion";
 
 const categories = [
   "Смартфоны",
@@ -39,6 +41,33 @@ const popularProducts = [
     name: "Apple Watch Ultra",
     price: "от 79 990 ₽",
     colors: ["#27272a", "#d6d3d1", "#fb923c"],
+  },
+];
+
+const faqItems = [
+  {
+    id: 1,
+    question: "Можно ли выбрать конфигурацию?",
+    answer:
+      "Да. На странице товара можно выбрать нужный объём памяти, цвет и доступные параметры модели.",
+  },
+  {
+    id: 2,
+    question: "Есть ли техника в наличии?",
+    answer:
+      "Да, большинство популярных моделей есть в наличии. Актуальный статус наличия показывается прямо в карточке товара.",
+  },
+  {
+    id: 3,
+    question: "Как оформить заказ?",
+    answer:
+      "Добавьте товар в корзину, перейдите к оформлению, укажите контакты и способ доставки — после этого менеджер подтвердит заказ.",
+  },
+  {
+    id: 4,
+    question: "Можно ли заказать товар под запрос?",
+    answer:
+      "Да. Если нужной конфигурации нет в наличии, мы можем привезти её под заказ. Сроки и условия уточняются индивидуально.",
   },
 ];
 
@@ -84,40 +113,50 @@ function Header({
   dark: boolean;
   setDark: (value: boolean) => void;
 }) {
+  const navItems = [
+    { label: "Каталог", href: "/catalog" },
+    { label: "Новинки", href: "/new" },
+    { label: "Бренды", href: "/brands" },
+    { label: "Акции", href: "/sales" },
+    { label: "Поддержка", href: "/help" },
+  ];
+
   return (
     <header
-className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 transition-all duration-700 ${panelClass(
-  dark
-)}`}
+      className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 transition-all duration-700 ${panelClass(
+        dark
+      )}`}
     >
-<Link
-  href="/"
-  className="relative flex h-20 w-[150px] items-center justify-start overflow-hidden"
->
-  <Image
-    src={dark ? "/logo-light.png" : "/logo-dark.png"}
-    alt="Нетизен"
-    width={150}
-    height={48}
-    priority
-    className="h-auto max-h-9 w-auto object-contain transition-opacity duration-700"
-  />
-</Link>
+      <Link
+        href="/"
+        className="relative flex h-12 w-[150px] items-center justify-start overflow-hidden"
+      >
+        <Image
+          src={dark ? "/logo-light.png" : "/logo-dark.png"}
+          alt="Нетизен"
+          width={150}
+          height={48}
+          priority
+          className="h-auto max-h-9 w-auto object-contain transition-opacity duration-700"
+        />
+      </Link>
 
-<nav className="hidden items-center gap-3 text-sm font-medium lg:flex">
-  {["Каталог", "Новинки", "Бренды", "Акции", "Поддержка"].map((item) => (
-    <a
-      key={item}
-      className="group relative overflow-hidden rounded-xl px-5 py-3 transition-colors duration-300 hover:text-white"
-    >
-      <span className="relative z-10">{item}</span>
+      <nav className="hidden items-center gap-3 text-sm font-medium lg:flex">
+        {navItems.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className="group relative overflow-hidden rounded-xl px-5 py-3 transition-colors duration-300 hover:text-white"
+          >
+            <span className="relative z-10">{item.label}</span>
 
-      <span className="absolute inset-0 translate-y-full rounded-xl bg-blue-600/90 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100" />
+            <span className="absolute inset-0 translate-y-full rounded-xl bg-blue-600/90 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100" />
 
-      <span className="absolute inset-x-3 bottom-0 h-px bg-blue-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-    </a>
-  ))}
-</nav>
+            <span className="absolute inset-x-3 bottom-0 h-px bg-blue-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </Link>
+        ))}
+      </nav>
+
       <div className="flex items-center gap-4">
         <div
           className={`hidden h-11 w-[300px] items-center rounded-xl border px-4 text-sm transition-all duration-700 md:flex ${
@@ -149,7 +188,9 @@ className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 t
 
         <button
           className={`h-11 w-11 rounded-xl border transition-all duration-700 ${
-            dark ? "border-white/10 bg-white/[0.03]" : "border-black/10 bg-white"
+            dark
+              ? "border-white/10 bg-white/[0.03]"
+              : "border-black/10 bg-white"
           }`}
         >
           🛒
@@ -157,7 +198,9 @@ className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 t
 
         <button
           className={`rounded-xl border px-5 py-3 text-sm transition-all duration-700 ${
-            dark ? "border-white/10 bg-white/[0.03]" : "border-black/10 bg-white"
+            dark
+              ? "border-white/10 bg-white/[0.03]"
+              : "border-black/10 bg-white"
           }`}
         >
           Войти
@@ -169,30 +212,35 @@ className={`flex h-[76px] items-center justify-between rounded-2xl border px-8 t
 
 function Hero({ dark }: { dark: boolean }) {
   return (
-    <section className="grid min-h-[620px] grid-cols-1 items-center gap-10 lg:grid-cols-2">
-      <div>
-        <div className="mb-8 inline-flex rounded-full border border-blue-500/50 px-4 py-2 text-sm text-blue-500">
+    <section className="relative grid min-h-[560px] grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[0.78fr_1.22fr] lg:py-12">
+      <div className="relative z-10 max-w-[640px]">
+        <div className="mb-7 inline-flex rounded-full border border-blue-500/50 px-4 py-2 text-sm text-blue-500">
           Оригинальная техника. Премиальный сервис.
         </div>
 
-        <h1 className="max-w-[680px] text-5xl font-bold leading-tight lg:text-6xl">
-          Техника премиум-класса <br />
-          для тех, кто создаёт будущее.
+        <h1 className="text-[42px] font-bold leading-[1.14] tracking-[-0.045em] sm:text-[52px] lg:text-[60px] xl:text-[64px]">
+          Техника премиум-класса для тех, кто создаёт будущее.
         </h1>
 
-        <p className={`mt-6 max-w-[480px] text-xl leading-relaxed ${mutedTextClass(dark)}`}>
-          Лучшие устройства от мировых брендов. Официальная гарантия,
-          быстрая доставка и поддержка 24/7.
+        <p
+          className={`mt-5 max-w-[455px] text-base leading-relaxed lg:text-lg ${mutedTextClass(
+            dark
+          )}`}
+        >
+          Лучшие устройства от мировых брендов. Официальная гарантия, быстрая
+          доставка и поддержка 24/7.
         </p>
 
-        <div className="mt-9 flex gap-5">
-          <button className="rounded-xl bg-blue-600 px-8 py-4 font-medium text-white transition-transform duration-300 hover:-translate-y-0.5">
+        <div className="mt-8 flex flex-wrap gap-4">
+          <button className="rounded-xl bg-blue-600 px-7 py-4 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-500">
             Перейти в каталог →
           </button>
 
           <button
-            className={`rounded-xl border px-8 py-4 font-medium transition-all duration-700 hover:-translate-y-0.5 ${
-              dark ? "border-white/10 bg-white/[0.03]" : "border-black/10 bg-white"
+            className={`rounded-xl border px-7 py-4 text-sm font-medium transition-all duration-700 hover:-translate-y-0.5 ${
+              dark
+                ? "border-white/10 bg-white/[0.03]"
+                : "border-black/10 bg-white"
             }`}
           >
             Новинки →
@@ -200,13 +248,21 @@ function Hero({ dark }: { dark: boolean }) {
         </div>
       </div>
 
-      <div
-        className={`flex h-[430px] items-center justify-center rounded-[32px] border transition-all duration-700 ${panelClass(
-          dark
-        )}`}
-      >
-        <div className={dark ? "text-white/35" : "text-black/35"}>
-          Здесь позже будет медведь + техника
+      <div className="relative flex min-h-[430px] items-end justify-center lg:min-h-[500px]">
+        <div
+          className={`absolute bottom-10 left-1/2 h-16 w-[82%] -translate-x-1/2 rounded-[100%] border transition-all duration-700 ${
+            dark
+              ? "border-blue-500/45 bg-blue-500/10 shadow-[0_0_45px_rgba(0,102,255,0.35)]"
+              : "border-blue-500/30 bg-blue-500/10 shadow-[0_0_35px_rgba(0,102,255,0.18)]"
+          }`}
+        />
+
+        <div
+          className={`absolute bottom-[76px] left-1/2 flex h-[330px] w-[92%] -translate-x-1/2 items-center justify-center rounded-[28px] transition-all duration-700 lg:h-[410px] ${
+            dark ? "bg-white/[0.015] text-white/25" : "bg-white/40 text-black/25"
+          }`}
+        >
+          Hero-слайдер
         </div>
       </div>
     </section>
@@ -233,6 +289,7 @@ function Benefits({ dark }: { dark: boolean }) {
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-blue-500/30 text-blue-500">
             ✓
           </div>
+
           <div>
             <div className="font-semibold">{item}</div>
             <div className={`mt-1 text-sm ${mutedTextClass(dark)}`}>
@@ -249,6 +306,7 @@ function Categories({ dark }: { dark: boolean }) {
   return (
     <section className="py-20">
       <h2 className="text-4xl font-bold">Выберите категорию</h2>
+
       <p className={`mt-3 ${mutedTextClass(dark)}`}>
         Выберите направление и найдите свой идеальный гаджет
       </p>
@@ -262,12 +320,20 @@ function Categories({ dark }: { dark: boolean }) {
             )}`}
           >
             <h3 className="text-xl font-bold">{category}</h3>
+
             <p className={`mt-2 text-sm ${mutedTextClass(dark)}`}>
               Популярные модели и бренды
             </p>
-            <button className="mt-10 flex h-10 w-10 items-center justify-center rounded-full border border-blue-500/30 text-blue-500">
-              →
-            </button>
+
+            <button
+  className={`mt-10 flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${
+    dark
+      ? "border-blue-500/30 bg-blue-500/5 text-blue-500 hover:bg-blue-500/10"
+      : "border-blue-500/25 bg-blue-50 text-blue-600 hover:bg-blue-100"
+  }`}
+>
+  →
+</button>
           </div>
         ))}
       </div>
@@ -288,23 +354,32 @@ function Categories({ dark }: { dark: boolean }) {
 function PopularProducts({ dark }: { dark: boolean }) {
   return (
     <section className="pb-20">
-      <div className="flex items-end justify-between">
-        <div>
-          <h2 className="text-5xl font-bold">Популярные товары</h2>
-          <p className={`mt-3 ${mutedTextClass(dark)}`}>
-            Выберите модель — конфигурацию подберёте на странице товара.
-          </p>
-        </div>
+      <div>
+        <h2 className="text-[42px] font-bold leading-none tracking-[-0.04em] lg:text-[52px]">
+          Популярные товары
+        </h2>
 
-        <a className="text-blue-500 transition-colors hover:text-blue-400">
-          Смотреть все →
-        </a>
+        <p className={`mt-3 text-base ${mutedTextClass(dark)}`}>
+          Выберите модель — конфигурацию подберёте на странице товара.
+        </p>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {popularProducts.map((product) => (
           <ProductCard key={product.name} product={product} dark={dark} />
         ))}
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <button
+          className={`min-w-[320px] rounded-xl border px-10 py-4 text-sm font-medium transition-all duration-500 hover:-translate-y-0.5 ${
+            dark
+              ? "border-white/10 bg-white/[0.035] text-white hover:border-blue-500/40 hover:bg-blue-500/10"
+              : "border-black/10 bg-white text-black shadow-sm hover:border-blue-500/40 hover:bg-blue-50"
+          }`}
+        >
+          Смотреть все товары →
+        </button>
       </div>
     </section>
   );
@@ -319,34 +394,43 @@ function ProductCard({
 }) {
   return (
     <article
-      className={`rounded-3xl border p-5 transition-all duration-700 hover:-translate-y-1 ${panelClass(
+      className={`rounded-3xl border p-4 transition-all duration-700 hover:-translate-y-1 ${
         dark
-      )}`}
+          ? "border-white/10 bg-white/[0.035] shadow-[0_20px_80px_rgba(0,60,255,0.08)]"
+          : "border-black/10 bg-white shadow-[0_20px_80px_rgba(15,23,42,0.08)]"
+      }`}
     >
       <div
-        className={`flex h-[260px] items-center justify-center rounded-2xl transition-colors duration-700 ${
-          dark ? "bg-white/[0.04] text-white/30" : "bg-slate-100 text-black/30"
+        className={`flex h-[250px] items-center justify-center rounded-2xl transition-colors duration-700 ${
+          dark ? "bg-white/[0.045] text-white/25" : "bg-slate-100 text-black/25"
         }`}
       >
         Фото товара
       </div>
 
-      <h3 className="mt-5 text-xl font-bold">{product.name}</h3>
-      <p className={`mt-2 ${mutedTextClass(dark)}`}>{product.price}</p>
+      <div className="px-1 pb-1 pt-4">
+        <h3 className="text-lg font-bold leading-tight">{product.name}</h3>
 
-      <div className="mt-4 flex gap-3">
-        {product.colors.map((color) => (
-          <span
-            key={color}
-            className="h-5 w-5 rounded-full border border-black/10"
-            style={{ backgroundColor: color }}
-          />
-        ))}
+        <p className={`mt-1 text-sm ${mutedTextClass(dark)}`}>
+          {product.price}
+        </p>
+
+        <div className="mt-4 flex gap-3">
+          {product.colors.map((color) => (
+            <span
+              key={color}
+              className={`h-5 w-5 rounded-full border ${
+                dark ? "border-white/15" : "border-black/10"
+              }`}
+              style={{ backgroundColor: color }}
+            />
+          ))}
+        </div>
+
+        <button className="mt-5 w-full rounded-xl bg-blue-600 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:bg-blue-500">
+          Перейти →
+        </button>
       </div>
-
-      <button className="mt-6 w-full rounded-xl bg-blue-600 py-4 font-medium text-white transition-all duration-300 hover:bg-blue-500">
-        Перейти →
-      </button>
     </article>
   );
 }
@@ -355,6 +439,7 @@ function NewArrivals({ dark }: { dark: boolean }) {
   return (
     <section className="pb-20">
       <h2 className="text-5xl font-bold">Новинки</h2>
+
       <p className={`mt-3 ${mutedTextClass(dark)}`}>
         Техника, которая только появилась
       </p>
@@ -368,10 +453,13 @@ function NewArrivals({ dark }: { dark: boolean }) {
           <div className="text-sm font-bold uppercase text-blue-500">
             Новинка
           </div>
+
           <h3 className="mt-6 text-5xl font-bold">iPhone 17e</h3>
+
           <p className={`mt-4 text-xl ${mutedTextClass(dark)}`}>
             Мощь. Красота. Доступнее.
           </p>
+
           <button className="mt-10 rounded-xl bg-blue-600 px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-blue-500">
             Подробнее →
           </button>
@@ -388,7 +476,9 @@ function NewArrivals({ dark }: { dark: boolean }) {
               <div className="text-sm font-bold uppercase text-blue-500">
                 Новинка
               </div>
+
               <h3 className="mt-4 text-3xl font-bold">{item}</h3>
+
               <p className={`mt-3 ${mutedTextClass(dark)}`}>от 59 990 ₽</p>
             </div>
           ))}
@@ -399,55 +489,143 @@ function NewArrivals({ dark }: { dark: boolean }) {
 }
 
 function SupportBlock({ dark }: { dark: boolean }) {
+  const [activeFaqId, setActiveFaqId] = useState<number | null>(1);
+
+  const orderedFaqs =
+    activeFaqId === null
+      ? faqItems
+      : [
+          ...faqItems.filter((item) => item.id === activeFaqId),
+          ...faqItems.filter((item) => item.id !== activeFaqId),
+        ];
+
   return (
     <section
-      className={`mb-20 rounded-[32px] border p-10 transition-all duration-700 ${panelClass(
+      className={`mb-20 rounded-[32px] border p-8 md:p-10 transition-all duration-700 ${panelClass(
         dark
       )}`}
     >
-      <h2 className="text-5xl font-bold">Сервис и поддержка Нетизен</h2>
-      <p className={`mt-4 text-xl ${mutedTextClass(dark)}`}>
+      <h2 className="text-4xl font-bold md:text-5xl">
+        Сервис и поддержка Нетизен
+      </h2>
+
+      <p className={`mt-4 text-lg md:text-xl ${mutedTextClass(dark)}`}>
         Подскажем, чем отличаются модели и как оформить заказ.
       </p>
 
-      <div className="mt-8 grid gap-5 lg:grid-cols-2">
-        <div className="grid grid-cols-2 gap-5">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {/* Левая колонка — преимущества */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {[
-            "Только оригинал",
-            "Официальная гарантия",
-            "Быстрая доставка",
-            "Безопасная оплата",
+            {
+              title: "Только оригинал",
+              text: "Работаем напрямую с официальными поставщиками.",
+            },
+            {
+              title: "Официальная гарантия",
+              text: "Гарантия производителя и собственная поддержка.",
+            },
+            {
+              title: "Быстрая доставка",
+              text: "По Москве — 1 день, по России — от 2 дней.",
+            },
+            {
+              title: "Безопасная оплата",
+              text: "Защищённые платежи и удобные способы оплаты.",
+            },
           ].map((item) => (
             <div
-              key={item}
-              className={`rounded-2xl border p-6 transition-all duration-700 ${
-                dark ? "border-white/10" : "border-black/10"
+              key={item.title}
+              className={`rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 ${
+                dark
+                  ? "border-white/10 bg-white/[0.025] hover:border-blue-500/30"
+                  : "border-black/10 bg-white hover:border-blue-500/30"
               }`}
             >
-              <div className="text-blue-500">✓</div>
-              <h3 className="mt-4 font-bold">{item}</h3>
-              <p className={`mt-2 text-sm ${mutedTextClass(dark)}`}>
-                Короткое описание.
+              <div className="text-blue-500 text-lg">✓</div>
+              <h3 className="mt-4 text-lg font-bold">{item.title}</h3>
+              <p className={`mt-2 text-sm leading-relaxed ${mutedTextClass(dark)}`}>
+                {item.text}
               </p>
             </div>
           ))}
         </div>
 
+        {/* Правая колонка — FAQ */}
         <div className="space-y-4">
-          {[
-            "Можно ли выбрать конфигурацию?",
-            "Есть ли техника в наличии?",
-            "Как оформить заказ?",
-          ].map((q) => (
-            <div
-              key={q}
-              className={`rounded-2xl border p-6 transition-all duration-700 ${
-                dark ? "border-white/10" : "border-black/10"
-              }`}
-            >
-              {q} <span className="float-right text-blue-500">+</span>
-            </div>
-          ))}
+          {orderedFaqs.map((item) => {
+            const isOpen = activeFaqId === item.id;
+
+            return (
+              <motion.div
+                key={item.id}
+                layout
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className={`overflow-hidden rounded-2xl border ${
+                  dark
+                    ? "border-white/10 bg-white/[0.02]"
+                    : "border-black/10 bg-white"
+                }`}
+              >
+                <button
+                  onClick={() =>
+                    setActiveFaqId((prev) => (prev === item.id ? null : item.id))
+                  }
+                  className={`group relative w-full px-6 py-5 text-left transition-all duration-300 ${
+                    dark
+                      ? "hover:bg-white/[0.03] hover:border-blue-500/20"
+                      : "hover:bg-blue-50/50 hover:border-blue-500/20"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-base font-semibold md:text-lg">
+                      {item.question}
+                    </span>
+
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`hidden text-xs transition-all duration-300 md:block ${
+                          dark ? "text-white/35" : "text-black/35"
+                        } opacity-0 translate-x-2 group-hover:translate-x-0 group-hover:opacity-100`}
+                      >
+                        {isOpen ? "Скрыть" : "Открыть"}
+                      </span>
+
+                      <span
+                        className={`flex h-8 w-8 items-center justify-center rounded-xl border text-sm transition-all duration-300 ${
+                          dark
+                            ? "border-white/10 bg-white/[0.03] text-blue-400 group-hover:border-blue-500/40 group-hover:bg-blue-500/10"
+                            : "border-black/10 bg-white text-blue-500 group-hover:border-blue-500/40 group-hover:bg-blue-50"
+                        } ${isOpen ? "rotate-45" : "rotate-0"}`}
+                      >
+                        +
+                      </span>
+                    </div>
+                  </div>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                        animate={{ height: "auto", opacity: 1, marginTop: 14 }}
+                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden pr-12"
+                      >
+                        <p
+                          className={`text-sm leading-relaxed md:text-[15px] ${mutedTextClass(
+                            dark
+                          )}`}
+                        >
+                          {item.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -461,45 +639,98 @@ function Footer({ dark }: { dark: boolean }) {
         dark
       )}`}
     >
-      <div className="grid gap-10 lg:grid-cols-4">
+      <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
         <div>
-          <div className="text-3xl font-bold tracking-[0.12em]">NETIZEN</div>
+          <Link
+            href="/"
+            className="relative flex h-12 w-[170px] items-center justify-start overflow-hidden"
+          >
+            <Image
+              src={dark ? "/logo-light.png" : "/logo-dark.png"}
+              alt="Нетизен"
+              width={170}
+              height={48}
+              className="h-auto max-h-10 w-auto object-contain transition-opacity duration-700"
+            />
+          </Link>
 
-          <div className="mt-8 space-y-5">
-            <p>8 (800) 123-45-67</p>
-            <p>@netizen_store</p>
-            <p>info@netizen.store</p>
+          <div className="mt-8 space-y-6">
+            <FooterContact
+              icon="☎"
+              title={footerData.contacts.phone}
+              text={footerData.contacts.phoneText}
+              dark={dark}
+            />
+
+            <FooterContact
+              icon="✈"
+              title={footerData.contacts.telegram}
+              text={footerData.contacts.telegramText}
+              dark={dark}
+            />
+
+            <FooterContact
+              icon="✉"
+              title={footerData.contacts.email}
+              text={footerData.contacts.emailText}
+              dark={dark}
+            />
+          </div>
+
+          <div
+            className={`mt-8 border-t pt-7 ${
+              dark ? "border-white/10" : "border-black/10"
+            }`}
+          >
+            <h3 className="text-xl font-bold">Будьте в курсе новинок</h3>
+
+            <p
+              className={`mt-3 max-w-[360px] text-sm leading-relaxed ${mutedTextClass(
+                dark
+              )}`}
+            >
+              Подпишитесь и узнавайте первыми о новых поступлениях и акциях.
+            </p>
+
+            <div
+              className={`mt-5 flex h-14 overflow-hidden rounded-xl border transition-all duration-700 ${
+                dark ? "border-white/10 bg-black/20" : "border-black/10 bg-white"
+              }`}
+            >
+              <input
+                placeholder="Ваш e-mail"
+                className={`min-w-0 flex-1 bg-transparent px-5 outline-none ${
+                  dark
+                    ? "text-white placeholder:text-white/35"
+                    : "text-black placeholder:text-black/35"
+                }`}
+              />
+
+              <button className="w-16 bg-blue-600 text-2xl text-white transition-colors hover:bg-blue-500">
+                →
+              </button>
+            </div>
           </div>
         </div>
 
-        <FooterColumn
-          title="Каталог"
-          items={["iPhone", "iPad", "Mac", "Watch", "AirPods", "Распродажа", "Новинки"]}
-        />
-
-        <FooterColumn
-          title="Покупателям"
-          items={[
-            "Доставка и оплата",
-            "Гарантия",
-            "Возврат и обмен",
-            "Как оформить заказ",
-            "Подбор конфигурации",
-            "Trade-in",
-          ]}
-        />
-
-        <FooterColumn
-          title="О нас"
-          items={["О компании", "Отзывы", "Блог", "Контакты", "Вакансии"]}
-        />
+        {footerData.columns.map((column) => (
+          <FooterColumn
+            key={column.title}
+            title={column.title}
+            items={column.links}
+          />
+        ))}
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-5">
-        {["Telegram", "YouTube", "Instagram"].map((item) => (
+      <div className="mt-10 grid gap-5 lg:grid-cols-3">
+        {footerData.socials.map((item) => (
           <button
             key={item}
-            className="rounded-xl border border-blue-500/30 px-10 py-4 text-blue-500 transition-all duration-300 hover:border-blue-500 hover:bg-blue-500/10"
+            className={`rounded-xl border px-10 py-4 text-blue-500 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-500 hover:bg-blue-500/10 ${
+              dark
+                ? "border-blue-500/30 bg-white/[0.02]"
+                : "border-blue-500/30 bg-white"
+            }`}
           >
             {item}
           </button>
@@ -507,27 +738,85 @@ function Footer({ dark }: { dark: boolean }) {
       </div>
 
       <div
-        className={`mt-10 border-t pt-8 text-sm transition-colors duration-700 ${
+        className={`mt-10 flex flex-col gap-6 border-t pt-8 text-sm transition-colors duration-700 lg:flex-row lg:items-center lg:justify-between ${
           dark ? "border-white/10 text-white/45" : "border-black/10 text-black/45"
         }`}
       >
-        © 2024 Netizen. Все права защищены.
+        <div>© 2024 Netizen. Все права защищены.</div>
+
+        <div className="flex flex-wrap gap-6">
+          {footerData.legal.map((item) => (
+            <a key={item} className="transition-colors hover:text-blue-500">
+              {item}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-5 text-lg font-bold opacity-70">
+          {footerData.payments.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
       </div>
     </footer>
   );
 }
 
-function FooterColumn({ title, items }: { title: string; items: string[] }) {
+function FooterContact({
+  icon,
+  title,
+  text,
+  dark,
+}: {
+  icon: string;
+  title: string;
+  text: string;
+  dark: boolean;
+}) {
+  return (
+    <div className="flex items-start gap-4">
+      <div
+        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-blue-500 transition-all duration-700 ${
+          dark ? "bg-blue-500/10" : "bg-blue-50"
+        }`}
+      >
+        {icon}
+      </div>
+
+      <div>
+        <div className="font-semibold">{title}</div>
+        <div className={`mt-1 text-sm ${mutedTextClass(dark)}`}>{text}</div>
+      </div>
+    </div>
+  );
+}
+
+function FooterColumn({
+  title,
+  items,
+}: {
+  title: string;
+  items: string[] | { label: string; href: string }[];
+}) {
   return (
     <div>
       <h3 className="text-xl font-bold">{title}</h3>
 
       <div className="mt-6 flex flex-col gap-4 opacity-60">
-        {items.map((item) => (
-          <a key={item} className="transition-colors hover:text-blue-500">
-            {item}
-          </a>
-        ))}
+        {items.map((item) => {
+          const label = typeof item === "string" ? item : item.label;
+          const href = typeof item === "string" ? "#" : item.href;
+
+          return (
+            <Link
+              key={label}
+              href={href}
+              className="transition-colors hover:text-blue-500"
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
